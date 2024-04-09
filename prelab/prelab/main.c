@@ -12,7 +12,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-int contador=0;
+int contador=5;
 int pulsador=0;
 uint8_t valor_PC=0;
 
@@ -29,25 +29,27 @@ ISR(PCINT1_vect){
 			pulsador++;
 		}
 	}else{
-		pulsador=0:
+		pulsador=0;
 	}
 }
 
 void setup(void){
 	cli();
 	DDRD=0xF0;
-	PORTD |= 0cFC;
+	PORTD |= 0xFC;
 	PCICR=0;
-	PCICR |=(1<<PCIE1)
-	PCMSK1|=(1<<PCINT8)
-	PCMSK1|=(1<<PCINT9)
+	PCICR |=(1<<PCIE1);
+	PCMSK1|=(1<<PCINT8);
+	PCMSK1|=(1<<PCINT9);
 	sei();
 }
 
-int main(void)
-{	//muestra el valor del contador
+int main(void){
+	setup();
+	//muestra el valor del contador
 	PORTD=contador;
-	delay(100);
+	_delay_ms(100);
+	return;
 }
 
 
