@@ -12,7 +12,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-int contador=5;
+int contador=0;
 int pulsador=0;
 uint8_t valor_PC=0;
 
@@ -21,11 +21,17 @@ ISR(PCINT1_vect){
 	//revisa si es la primera o segunda interrupción
 	valor_PC=PINC;
 	if (pulsador==0){
-		if (valor_PC==1){
+		if (valor_PC==0b00000010){
 			contador++;
+			if (contador==256){
+				contador=0;
+			}
 			pulsador++;
-		}else if (valor_PC==2){
+		}else if (valor_PC==0b00000001){
 			contador--;
+			if(contador<0){
+				contador=255;
+			}
 			pulsador++;
 		}
 	}else{
@@ -35,21 +41,22 @@ ISR(PCINT1_vect){
 
 void setup(void){
 	cli();
-	DDRD=0xF0;
-	PORTD |= 0xFC;
+	DDRD=0b11111111;
 	PCICR=0;
 	PCICR |=(1<<PCIE1);
 	PCMSK1|=(1<<PCINT8);
 	PCMSK1|=(1<<PCINT9);
+	UCSR0B=0;
 	sei();
 }
 
 int main(void){
 	setup();
 	//muestra el valor del contador
-	PORTD=contador;
-	_delay_ms(100);
-	return;
+	while(1){
+		PORTD=contador;
+		_delay_ms(100);
+	}
 }
 
 
